@@ -8,21 +8,14 @@ import datetime
 
 class Rossmann(object):
     def __init__(self):
-        import os
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        self.home_path = os.path.join(os.path.dirname(os.path.dirname(current_dir)), 'parameter') + '/'
-        
-        self.competition_distance_scaler   = pickle.load(open(self.home_path + 'competition_distance_scaler.pkl', 'rb'))
-        self.competition_time_month_scaler = pickle.load(open(self.home_path + 'competition_time_month_scaler.pkl', 'rb'))
-        self.promo_time_week_scaler        = pickle.load(open(self.home_path + 'promo_time_week_scaler.pkl', 'rb'))
-        self.year_scaler                   = pickle.load(open(self.home_path + 'year_scaler.pkl', 'rb'))
-        self.store_type_scaler             = pickle.load(open(self.home_path + 'store_type_scaler.pkl', 'rb'))
+        self.home_path = '../'
+        self.competition_distance_scaler   = pickle.load(open(self.home_path + 'parameter/competition_distance_scaler.pkl', 'rb'))
+        self.competition_time_month_scaler = pickle.load(open(self.home_path + 'parameter/competition_time_month_scaler.pkl', 'rb'))
+        self.promo_time_week_scaler        = pickle.load(open(self.home_path + 'parameter/promo_time_week_scaler.pkl', 'rb'))
+        self.year_scaler                   = pickle.load(open(self.home_path + 'parameter/year_scaler.pkl', 'rb'))
+        self.store_type_scaler             = pickle.load(open(self.home_path + 'parameter/store_type_scaler.pkl', 'rb'))
 
     def data_cleaning(self, df1):
-        # Helper function to check if value is NaN or None
-        def is_nan_or_none(x):
-            return x is None or (isinstance(x, float) and math.isnan(x))
-        
         # 1. Rename Columns
         cols_old = ['Store', 'DayOfWeek', 'Date', 'Open', 'Promo', 'StateHoliday', 'SchoolHoliday',
                     'StoreType', 'Assortment', 'CompetitionDistance', 'CompetitionOpenSinceMonth',
@@ -36,26 +29,27 @@ class Rossmann(object):
         df1['date'] = pd.to_datetime(df1['date'])
 
         # 3. Fill NA values
-        df1['competition_distance'] = df1['competition_distance'].apply(lambda x: 200000.0 if is_nan_or_none(x) else x)
+        df1['competition_distance'] = df1['competition_distance'].apply(lambda x: 200000.0 if math.isnan(x) else x)
 
         df1['competition_open_since_month'] = df1.apply(
-            lambda x: x['date'].month if is_nan_or_none(x['competition_open_since_month']) else x['competition_open_since_month'],
+            lambda x: x['date'].month if math.isnan(x['competition_open_since_month']) else x['competition_open_since_month'],
             axis=1
         )
         df1['competition_open_since_year'] = df1.apply(
-            lambda x: x['date'].year if is_nan_or_none(x['competition_open_since_year']) else x['competition_open_since_year'],
+            lambda x: x['date'].year if math.isnan(x['competition_open_since_year']) else x['competition_open_since_year'],
             axis=1
         )
         df1['promo2_since_week'] = df1.apply(
-            lambda x: x['date'].isocalendar().week if is_nan_or_none(x['promo2_since_week']) else x['promo2_since_week'],
+            lambda x: x['date'].isocalendar().week if math.isnan(x['promo2_since_week']) else x['promo2_since_week'],
             axis=1
         )
         df1['promo2_since_year'] = df1.apply(
-            lambda x: x['date'].year if is_nan_or_none(x['promo2_since_year']) else x['promo2_since_year'],
+            lambda x: x['date'].year if math.isnan(x['promo2_since_year']) else x['promo2_since_year'],
             axis=1
         )
 
-        month_map = {1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May', 6: 'Jun', 7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'}
+        month_map = {1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May', 6: 'Jun',
+                     7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'}
 
         df1['promo_interval'].fillna(0, inplace=True)
         df1['month_map'] = df1['date'].dt.month.map(month_map)
@@ -87,7 +81,7 @@ class Rossmann(object):
         )
         df2['competition_time_month'] = ((df2['date'] - df2['competition_since']) / 30).apply(lambda x: x.days).astype(int)
 
-        # promo_since
+        # promo since
         df2['promo_since'] = df2['promo2_since_year'].astype(str) + '-' + df2['promo2_since_week'].astype(str)
         df2['promo_since'] = df2['promo_since'].apply(
             lambda x: datetime.datetime.strptime(x + '-1', '%G-%V-%u') - datetime.timedelta(days=7)
@@ -102,9 +96,9 @@ class Rossmann(object):
                       'easter_holiday' if x == 'b' else
                       'christmas' if x == 'c' else 'regular_day'
         )
-        
+
         # Filter rows and drop unused columns
-        # df2 = df2[df2['open'] != 0] # This line MUST be removed/commented for prediction
+        # df2 = df2[df2['open'] != 0] # This line should be removed for prediction
         cols_drop = ['open', 'promo_interval', 'month_map']
         df2 = df2.drop(cols_drop, axis=1)
 
