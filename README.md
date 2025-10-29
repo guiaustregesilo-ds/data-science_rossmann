@@ -1,15 +1,15 @@
-** Rossmann Store Sales Prediction **
+**Rossmann Store Sales Prediction**
 
-🚀 Project Overview
+🚀 **Project Overview**
 This project provides a robust Machine Learning solution to forecast the daily sales of 1,115 Rossmann drug stores across Europe. The main goal is to deliver accurate sales predictions for the immediate next week and up to six weeks ahead, enabling management to make strategic decisions regarding inventory, promotions, and logistics.
 
-🎯 Business Objective
+🎯 **Business Objective**
 To accurately predict the daily sales for each store for a future period.
 
-📊 Performance Metric
+📊 **Performance Metric**
 The model's performance was primarily evaluated using the Mean Absolute Percentage Error (MAPE). This metric is highly suitable for sales forecasting problems as it provides the average percentage error of the prediction relative to the actual value, which is easily interpretable for business stakeholders.
 
-⚙️ Solution Architecture
+⚙️ **Solution Architecture**
 The project follows a standard Data Science lifecycle, structured into distinct steps:
 
 STEP 01: Data Description
@@ -50,7 +50,7 @@ STEP 10: Deployment
 
 The final model is serialized and deployed as a REST API using Flask for real-time inference.
 
-🛠️ Technologies and Libraries
+🛠️ **Technologies and Libraries**
 The project was developed in Python, leveraging the following libraries:
 
 Language: Python
