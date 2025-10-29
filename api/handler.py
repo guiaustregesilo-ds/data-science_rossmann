@@ -37,7 +37,7 @@ except Exception as e:
     model = DummyModel()
 
 # initialize API
-app = Flask(__name__)
+app = Flask(__name__) 
 
 @app.route('/rossmann/predict', methods=['POST'])
 def rossmann_predict():

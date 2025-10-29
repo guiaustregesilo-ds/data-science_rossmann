@@ -20,7 +20,7 @@ class Rossmann(object):
         cols_old = ['Store', 'DayOfWeek', 'Date', 'Open', 'Promo', 'StateHoliday', 'SchoolHoliday',
                     'StoreType', 'Assortment', 'CompetitionDistance', 'CompetitionOpenSinceMonth',
                     'CompetitionOpenSinceYear', 'Promo2', 'Promo2SinceWeek', 'Promo2SinceYear', 'PromoInterval']
-        
+         
         snakecase = lambda x: inflection.underscore(x)
         cols_new = list(map(snakecase, cols_old))
         df1.columns = cols_new
